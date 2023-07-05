@@ -1,9 +1,9 @@
 <template>
   <v-app-bar flat>
-    <v-app-bar-title>
+    <v-app-bar-title class="text-center">
       <v-icon icon="mdi-circle-slice-6" />
 
-      Essentials Preset
+      Aplicația de comandă
     </v-app-bar-title>
   </v-app-bar>
 </template>
