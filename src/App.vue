@@ -1,5 +1,5 @@
 <template>
-  <router-view />
+  <h1>Comandă paste colorate natural</h1>
 </template>
 
 <script lang="ts" setup>
