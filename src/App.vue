@@ -31,46 +31,78 @@
     <v-row justify="center">
       <v-col md="8" cols="12" align="center">
         <v-btn color="success" class="btn btn-primary btn-user btn-block" @click="AddToCart()">
+          <font-awesome-icon :icon="cartIcon" size="1x" />
           Adaugă în coș
         </v-btn>
       </v-col>
     </v-row>
 
-    <v-row justify="center">
-      <v-col md="8" cols="12" align="center">
-        <h2>Coșul de cumpărături</h2>
+    <div v-if="appStore?.cart?.length > 0">
+
+      <v-row justify="center">
+        <v-col md="8" cols="12" align="center">
+          <h2>Coșul de cumpărături</h2>
+
+          <v-list justify="left" align="left">
+            <v-list-item v-for="(p, index) in appStore.cart" :key="index">
+              <div class="d-flex justify-start">{{ p.quantity }} x {{ p.packType }} de {{
+                p.pastaType }} cu făină {{
+    p.flourType }} și {{ p.colorType }}.
+              </div>
+
+              <v-btn color="danger" class="btn btn-danger d-flex justify-end" @click="RemoveFromCart(index)">
+                <font-awesome-icon :icon="cartIcon" size="1x" />
+              </v-btn>
+            </v-list-item>
+
+          </v-list>
+        </v-col>
+      </v-row>
+
+      <v-row justify="center">
+        <v-col md="8" cols="12" align="center">
+          <h2>Detalii cumpărător</h2>
+          <div class="form-group">
+            <v-text-field v-model="name" :counter="200" :rules="nameRules" label="Nume" required></v-text-field>
+          </div>
+        </v-col>
+      </v-row>
+
+      <v-row justify="center">
+        <v-col md="4" cols="12">
+          <div class="form-group">
+            <v-text-field v-model="email" :counter="200" :rules="emailRules" label="Email" required></v-text-field>
+          </div>
+
+        </v-col>
+
+        <v-col md="4" cols="12">
+          <div class="form-group">
+            <v-text-field v-model="phone" :counter="200" :rules="phoneRules" label="Telefon" required></v-text-field>
+          </div>
+        </v-col>
+
+        <v-col md="8" cols="12">
+
+          <div class="form-group">
+            <v-textarea v-model="description" :counter="5000" :rules="descriptionRules" label="Observații"></v-textarea>
+          </div>
 
 
-      </v-col>
-    </v-row>
-
-    <v-row justify="center">
-      <v-col md="8" cols="12" align="center">
-        <h2>Detalii cumpărător</h2>
-        <div class="form-group">
-          <v-text-field v-model="name" :counter="200" :rules="nameRules" label="Nume" required></v-text-field>
-        </div>
-
-        <div class="form-group">
-          <v-text-field v-model="email" :counter="200" :rules="emailRules" label="Email" required></v-text-field>
-        </div>
-
-        <div class="form-group">
-          <v-text-field v-model="phone" :counter="200" :rules="phoneRules" label="Telefon" required></v-text-field>
-        </div>
-
-        <v-btn color="success" class="btn btn-primary btn-user btn-block" @click="Submit()">
-          Comandă
-        </v-btn>
-      </v-col>
-    </v-row>
+          <v-btn color="success" class="btn btn-primary btn-user btn-block" @click="Submit()">
+            Comandă
+          </v-btn>
+        </v-col>
+      </v-row>
+    </div>
   </v-form>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 // @ts-ignore
-//import { appStore } from '@/stores/appstore.ts';
+import { appStore } from '@/store/appstore.ts';
 
 export default defineComponent({
   components: {
@@ -88,11 +120,15 @@ export default defineComponent({
       colorType: '',
       pastaType: '',
       packType: '',
-      //appStore: appStore(),
+
+      cartIcon: faCartShopping,
+
+      appStore: appStore(),
       error: undefined,
       email: undefined,
       name: undefined,
       phone: undefined,
+      description: '',
       valid: false,
       colorTypeRules: [(v: any) => !!v || 'Obligatoriu'],
       flourTypeRules: [(v: any) => !!v || 'Obligatoriu'],
@@ -120,13 +156,23 @@ export default defineComponent({
         // @ts-ignore
         (v: any) => !this.error?.email || this.error.email[0],
       ],
+      descriptionRules: [
+        (v: any) => (v || '').length <= 5000 || 'Sunt permise maxim 5000 caractere.',
+      ],
     }
   },
 
   methods: {
     AddToCart() {
-
+      this.appStore.addToCart({
+        flourType: this.flourType,
+        colorType: this.colorType,
+        pastaType: this.pastaType,
+        packType: this.packType,
+        quantity: 1
+      })
     },
+    RemoveFromCart(index: number) { },
     Submit() {
       const s = { email: this.email };
       this.appStore.forgotPassword(s, (success: boolean, data: any) => {
@@ -144,3 +190,4 @@ export default defineComponent({
   },
 })
 </script>
+@/store/appstore
