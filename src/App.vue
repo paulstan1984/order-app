@@ -161,6 +161,21 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <v-dialog v-model="errorDialog" width="auto">
+    <v-card>
+      <v-card-text>
+        <strong>Hopa!</strong> <br/> <br/>
+        Ceva nu a funcționat corect. Te rog să mai încerci. Dacă problema persistă te rog să mă contactezi la telefon 0742321007.
+        <br/><br/>
+        O zi frumoasă, <br/> 
+        Ioana!
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="primary" block @click="errorDialog = false">Închide</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts">
@@ -197,6 +212,7 @@ export default defineComponent({
       valid: false,
       validOrderForm: false,
       successDialog: false,
+      errorDialog: false,
       colorTypeRules: [(v: any) => !!v || 'Obligatoriu'],
       flourTypeRules: [(v: any) => !!v || 'Obligatoriu'],
       packTypeRules: [(v: any) => !!v || 'Obligatoriu'],
@@ -281,6 +297,7 @@ export default defineComponent({
           this.successDialog = true;
         } else {
           this.error = data;
+          this.errorDialog = true;
           //@ts-ignore 
           this.$refs.orderForm.validate();
         }
