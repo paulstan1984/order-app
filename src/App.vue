@@ -65,7 +65,7 @@
               <td>{{ p.packType }} de {{ p.pastaType }} cu făină {{ p.flourType }} și {{ p.colorType }}</td>
               <td class="text-right" nowrap>{{ appStore.getUnitPrice(p) }} Lei</td>
               <td class="text-right" nowrap>
-                <v-text-field v-model="p.quantity" type="number" label="Cantitate"></v-text-field>
+                <v-text-field v-model="p.quantity" min="1" type="number"></v-text-field>
               </td>
               <td class="text-right" nowrap>{{ appStore.getPrice(p) }} Lei</td>
               <td>
