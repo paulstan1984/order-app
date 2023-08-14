@@ -40,11 +40,14 @@
   </v-form>
 
 
-  <v-form ref="orderForm" v-if="appStore?.cart?.length > 0">
+  <v-form ref="orderForm" v-model="validOrderForm" v-if="appStore?.cart?.length > 0">
 
     <v-row justify="center">
       <v-col md="8" cols="12" align="center">
         <h2>Coșul de cumpărături</h2>
+
+        <v-alert type="info" variant="tonal" class="text-left">La cumpărături de peste {{ appStore.deliveryPrice }} Lei
+          transportul este gratuit.</v-alert>
 
         <v-table>
           <thead>
@@ -83,10 +86,28 @@
               </td>
               <td></td>
             </tr>
+
+            <tr v-if="appStore.getTotalPrice() < 100">
+              <td colspan="3">
+                Transport
+              </td>
+              <td class="text-right" nowrap>
+                {{ appStore.deliveryPrice }} Lei
+              </td>
+              <td></td>
+            </tr>
+
+            <tr v-if="appStore.getTotalPrice() < 100">
+              <td colspan="3">
+                Total de plată
+              </td>
+              <td class="text-right" nowrap>
+                {{ appStore.getTotalPrice() + appStore.deliveryPrice }} Lei
+              </td>
+              <td></td>
+            </tr>
           </tbody>
         </v-table>
-
-
       </v-col>
     </v-row>
 
@@ -102,30 +123,44 @@
     <v-row justify="center">
       <v-col md="4" cols="12">
         <div class="form-group">
-          <v-text-field v-model="email" :counter="200" :rules="emailRules" label="Email" required></v-text-field>
+          <v-text-field v-model="email" :counter="200" :rules="emailRules" label="Email" persistent-hint hint="opțional"></v-text-field>
         </div>
-
       </v-col>
 
       <v-col md="4" cols="12">
         <div class="form-group">
-          <v-text-field v-model="phone" :counter="200" :rules="phoneRules" label="Telefon" required></v-text-field>
+          <v-text-field v-model="phone" :counter="13" :rules="phoneRules" label="Telefon" required></v-text-field>
         </div>
       </v-col>
 
-      <v-col md="8" cols="12">
+      <v-col md="8" cols="12" align="center">
 
+        <v-alert type="info" variant="tonal" class="text-left">Vă rog să precizați adresa de livrare în secțiunea de
+          Observații.</v-alert>
         <div class="form-group">
           <v-textarea v-model="description" :counter="5000" :rules="descriptionRules" label="Observații"></v-textarea>
         </div>
-
-
         <v-btn color="success" class="btn btn-primary btn-user btn-block" @click="Submit()">
           Comandă
         </v-btn>
       </v-col>
     </v-row>
   </v-form>
+
+  <v-dialog v-model="successDialog" width="auto">
+    <v-card>
+      <v-card-text>
+        <strong>Mulțimesc!</strong> <br/> <br/>
+        Te voi contacta curând pentru confirmarea comenzii și a livrării. 
+        <br/><br/>
+        O zi frumoasă, <br/> 
+        Ioana!
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="primary" block @click="clearOrder()">Închide</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts">
@@ -133,6 +168,7 @@ import { defineComponent } from 'vue'
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 // @ts-ignore
 import { appStore, FlourType } from '@/store/appstore.ts';
+import { throwStatement } from '@babel/types';
 
 export default defineComponent({
   components: {
@@ -159,29 +195,28 @@ export default defineComponent({
       phone: undefined,
       description: '',
       valid: false,
+      validOrderForm: false,
+      successDialog: false,
       colorTypeRules: [(v: any) => !!v || 'Obligatoriu'],
       flourTypeRules: [(v: any) => !!v || 'Obligatoriu'],
       packTypeRules: [(v: any) => !!v || 'Obligatoriu'],
       pastaTypeRules: [(v: any) => !!v || 'Obligatoriu'],
 
       nameRules: [
-        (v: any) => (v || '').length <= 200 || 'A maximum of 200 characters is allowed.',
+        (v: any) => (v || '').length <= 200 || 'Sunt permise maxim 200 de caractere.',
         (v: any) => !!v || 'Obligatoriu',
-        (v: any) => /.+@.+/.test(v) || 'E-mail must be valid',
         // @ts-ignore
-        (v: any) => !this.error?.email || this.error.email[0],
+        (v: any) => !this.error?.name || this.error.name[0],
       ],
       emailRules: [
-        (v: any) => (v || '').length <= 200 || 'A maximum of 200 characters is allowed.',
-        (v: any) => !!v || 'Obligatoriu',
-        (v: any) => /.+@.+/.test(v) || 'E-mail must be valid',
+        (v: any) => (v || '').length <= 200 || 'Sunt permise maxim 200 de caractere.',
+        (v: any) => !v || /.+@.+/.test(v) || 'Trebuie o adresă de E-mail corectă.',
         // @ts-ignore
         (v: any) => !this.error?.email || this.error.email[0],
       ],
       phoneRules: [
-        (v: any) => (v || '').length <= 200 || 'A maximum of 200 characters is allowed.',
+        (v: any) => (v || '').length <= 13 || 'Sunt permise maxil 12 caractere.',
         (v: any) => !!v || 'Obligatoriu',
-        (v: any) => /.+@.+/.test(v) || 'E-mail must be valid',
         // @ts-ignore
         (v: any) => !this.error?.email || this.error.email[0],
       ],
@@ -198,6 +233,21 @@ export default defineComponent({
   },
 
   methods: {
+    clearOrder() {
+      this.appStore.cart = [];
+      this.successDialog = false;
+      this.name = undefined;
+      this.email = undefined;
+      this.phone = undefined;
+      this.description = '';
+      this.flourType = '' as FlourType;
+      this.colorType = '';
+      this.pastaType = '';
+      this.packType = '';
+      //@ts-ignore
+      this.$refs.form.reset();
+    },
+
     AddToCart() {
       //@ts-ignore 
       this.$refs.form.validate();
@@ -215,16 +265,24 @@ export default defineComponent({
       this.appStore.removeFromCart(index);
     },
     Submit() {
-      const s = { email: this.email };
-      this.appStore.forgotPassword(s, (success: boolean, data: any) => {
+      //@ts-ignore 
+      this.$refs.orderForm.validate();
+
+      const request = {
+        name: this.name,
+        email: this.email,
+        phone: this.phone,
+        description: this.description,
+        cart: this.appStore.cart
+      };
+
+      this.appStore.makeOrder(request, (success: boolean, data: any) => {
         if (success) {
-          alert('Your received an email with the password reset link.');
-          this.$router.push('/login');
+          this.successDialog = true;
         } else {
           this.error = data;
-          console.log(this.error);
           //@ts-ignore 
-          this.$refs.form.validate();
+          this.$refs.orderForm.validate();
         }
       });
     },

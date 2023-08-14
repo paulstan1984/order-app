@@ -29,7 +29,8 @@ export const prices = {
 
 export const appStore = defineStore('appStore', {
   state: () => ({
-    cart: [] as ProductDTO[]
+    cart: [] as ProductDTO[],
+    deliveryPrice: 20
   }),
 
   actions: {
@@ -68,6 +69,10 @@ export const appStore = defineStore('appStore', {
       let price = 0;
       this.cart.forEach(p => price += this.getPrice(p));
       return price;
-    }
+    },
+
+    makeOrder(request: any, cb: (success: boolean, data: any) => void) {
+      cb(true, []);
+    },
   }
 })
