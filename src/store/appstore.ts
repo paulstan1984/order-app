@@ -1,5 +1,6 @@
 // Utilities
 import { defineStore } from 'pinia'
+import axios from 'axios';
 
 export type FlourType = 'Albă' | 'Integrală' | 'Fără gluten';
 
@@ -26,6 +27,8 @@ export const prices = {
   }
 }
 
+const accessToken = 'BJFKELVBJRKELDBNRJKEL';
+const APIURL = 'http://paste-colorate-natural.test/public/api/';
 
 export const appStore = defineStore('appStore', {
   state: () => ({
@@ -72,7 +75,10 @@ export const appStore = defineStore('appStore', {
     },
 
     makeOrder(request: any, cb: (success: boolean, data: any) => void) {
-      cb(true, []);
+      axios
+        .post(APIURL + 'new-order', request, { headers: { 'Authorization': accessToken } })
+        .then(data => cb(true, data.data))
+        .catch(err => cb(false, err?.response?.data))
     },
   }
 })
