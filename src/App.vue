@@ -123,13 +123,15 @@
     <v-row justify="center">
       <v-col md="4" cols="12">
         <div class="form-group">
-          <v-text-field v-model="email" :counter="200" :rules="emailRules" label="Email" persistent-hint hint="opțional"></v-text-field>
+          <v-text-field v-model="email" :counter="200" :rules="emailRules" label="Email" persistent-hint
+            hint="opțional"></v-text-field>
         </div>
       </v-col>
 
       <v-col md="4" cols="12">
         <div class="form-group">
-          <v-text-field v-model="phone" type="number" :counter="13" :rules="phoneRules" label="Telefon" required></v-text-field>
+          <v-text-field v-model="phone" type="number" :counter="13" :rules="phoneRules" label="Telefon"
+            required></v-text-field>
         </div>
       </v-col>
 
@@ -150,10 +152,10 @@
   <v-dialog v-model="successDialog" width="auto">
     <v-card>
       <v-card-text>
-        <strong>Mulțimesc!</strong> <br/> <br/>
-        Te voi contacta curând pentru confirmarea comenzii și a livrării. 
-        <br/><br/>
-        O zi frumoasă, <br/> 
+        <strong>Mulțimesc!</strong> <br /> <br />
+        Te voi contacta curând pentru confirmarea comenzii și a livrării.
+        <br /><br />
+        O zi frumoasă, <br />
         Ioana!
       </v-card-text>
       <v-card-actions>
@@ -165,10 +167,11 @@
   <v-dialog v-model="errorDialog" width="auto">
     <v-card>
       <v-card-text>
-        <strong>Eroare</strong> <br/> <br/>
-        Ceva nu a funcționat corect. Te rog să mai încerci. Dacă problema persistă te rog să mă contactezi la telefon 0742321007.
-        <br/><br/>
-        O zi frumoasă, <br/> 
+        <strong>Eroare</strong> <br /> <br />
+        Ceva nu a funcționat corect. Te rog să mai încerci. Dacă problema persistă te rog să mă contactezi la telefon
+        0742321007.
+        <br /><br />
+        O zi frumoasă, <br />
         Ioana!
       </v-card-text>
       <v-card-actions>
@@ -207,7 +210,7 @@ export default defineComponent({
       error: undefined,
       email: undefined,
       name: undefined,
-      phone: undefined,
+      phone: undefined as undefined | number,
       description: '',
       valid: false,
       validOrderForm: false,
@@ -283,6 +286,10 @@ export default defineComponent({
     Submit() {
       //@ts-ignore 
       this.$refs.orderForm.validate();
+
+      if (!this.validOrderForm) {
+        return;
+      }
 
       const request = {
         name: this.name,
