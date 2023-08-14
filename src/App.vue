@@ -24,7 +24,7 @@
       </v-col>
 
       <v-col md="4" cols="12">
-        <v-select v-model="packType" :items="packTypes" label="Ambalaj" :rules="packTypeRules"></v-select>
+        <v-select v-model="packType" :items="appStore.getPackTypes(flourType)" label="Ambalaj" :rules="packTypeRules"></v-select>
       </v-col>
     </v-row>
 
@@ -43,19 +43,36 @@
         <v-col md="8" cols="12" align="center">
           <h2>Coșul de cumpărături</h2>
 
-          <v-list justify="left" align="left">
-            <v-list-item v-for="(p, index) in appStore.cart" :key="index">
-              <div class="d-flex justify-start">{{ p.quantity }} x {{ p.packType }} de {{
-                p.pastaType }} cu făină {{
-    p.flourType }} și {{ p.colorType }}.
-              </div>
+          <v-table>
+            <thead>
+              <tr>
+                <th class="text-left">
+                  Produs
+                </th>
+                <th class="text-right" nowrap>Preț unitar</th>
+                <th class="text-right" nowrap>
+                  Cantitate
+                </th>
+                <th class="text-right" nowrap>Preț</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(p, index) in appStore.cart" :key="index">
+                <td>{{ p.packType }} de {{p.pastaType }} cu făină {{p.flourType }} și {{ p.colorType }}</td>
+                <td class="text-right" nowrap></td>
+                <td class="text-right" nowrap>{{ p.quantity }}</td>
+                <td class="text-right" nowrap></td>
+                <td>
+                  <v-btn size="small" variant="flat" class="btn" color="red" @click="RemoveFromCart(index)">
+                    <font-awesome-icon :icon="cartIcon" size="1x" />
+                  </v-btn>
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
 
-              <v-btn color="danger" class="btn btn-danger d-flex justify-end" @click="RemoveFromCart(index)">
-                <font-awesome-icon :icon="cartIcon" size="1x" />
-              </v-btn>
-            </v-list-item>
 
-          </v-list>
         </v-col>
       </v-row>
 
@@ -102,7 +119,7 @@
 import { defineComponent } from 'vue'
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 // @ts-ignore
-import { appStore } from '@/store/appstore.ts';
+import { appStore, FlourType } from '@/store/appstore.ts';
 
 export default defineComponent({
   components: {
@@ -115,11 +132,10 @@ export default defineComponent({
       colorTypes: ['Suc de sfeclă Bio', 'Suc de morcovi Bio', 'Extract de afine',
         'Pudră de aronia și apă', 'Pudră de urzici și apă', 'Pudră de Kale și apă'],
       pastaTypes: ['Tagliatelle', "Spaghete"],
-      packTypes: ['100 gr', '250 gr', '400 gr'],
-      flourType: '',
+      flourType: '' as FlourType,
       colorType: '',
       pastaType: '',
-      packType: '',
+      packType: '' as string,
 
       cartIcon: faCartShopping,
 
@@ -165,14 +181,16 @@ export default defineComponent({
   methods: {
     AddToCart() {
       this.appStore.addToCart({
-        flourType: this.flourType,
+        flourType: this.flourType as FlourType,
         colorType: this.colorType,
         pastaType: this.pastaType,
         packType: this.packType,
         quantity: 1
       })
     },
-    RemoveFromCart(index: number) { },
+    RemoveFromCart(index: number) { 
+      this.appStore.removeFromCart(index);
+    },
     Submit() {
       const s = { email: this.email };
       this.appStore.forgotPassword(s, (success: boolean, data: any) => {
