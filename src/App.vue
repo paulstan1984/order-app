@@ -24,7 +24,8 @@
       </v-col>
 
       <v-col md="4" cols="12">
-        <v-select v-model="packType" :items="appStore.getPackTypes(flourType)" label="Ambalaj" :rules="packTypeRules"></v-select>
+        <v-select v-model="packType" :items="appStore.getPackTypes(flourType)" label="Ambalaj"
+          :rules="packTypeRules"></v-select>
       </v-col>
     </v-row>
 
@@ -36,82 +37,94 @@
         </v-btn>
       </v-col>
     </v-row>
-
-    <div v-if="appStore?.cart?.length > 0">
-
-      <v-row justify="center">
-        <v-col md="8" cols="12" align="center">
-          <h2>Coșul de cumpărături</h2>
-
-          <v-table>
-            <thead>
-              <tr>
-                <th class="text-left">
-                  Produs
-                </th>
-                <th class="text-right" nowrap>Preț unitar</th>
-                <th class="text-right" nowrap>
-                  Cantitate
-                </th>
-                <th class="text-right" nowrap>Preț</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(p, index) in appStore.cart" :key="index">
-                <td>{{ p.packType }} de {{p.pastaType }} cu făină {{p.flourType }} și {{ p.colorType }}</td>
-                <td class="text-right" nowrap></td>
-                <td class="text-right" nowrap>{{ p.quantity }}</td>
-                <td class="text-right" nowrap></td>
-                <td>
-                  <v-btn size="small" variant="flat" class="btn" color="red" @click="RemoveFromCart(index)">
-                    <font-awesome-icon :icon="cartIcon" size="1x" />
-                  </v-btn>
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
+  </v-form>
 
 
-        </v-col>
-      </v-row>
+  <v-form ref="orderForm" v-if="appStore?.cart?.length > 0">
 
-      <v-row justify="center">
-        <v-col md="8" cols="12" align="center">
-          <h2>Detalii cumpărător</h2>
-          <div class="form-group">
-            <v-text-field v-model="name" :counter="200" :rules="nameRules" label="Nume" required></v-text-field>
-          </div>
-        </v-col>
-      </v-row>
+    <v-row justify="center">
+      <v-col md="8" cols="12" align="center">
+        <h2>Coșul de cumpărături</h2>
 
-      <v-row justify="center">
-        <v-col md="4" cols="12">
-          <div class="form-group">
-            <v-text-field v-model="email" :counter="200" :rules="emailRules" label="Email" required></v-text-field>
-          </div>
+        <v-table>
+          <thead>
+            <tr>
+              <th class="text-left">
+                Produs
+              </th>
+              <th class="text-right" nowrap>Preț unitar</th>
+              <th class="text-right" nowrap>
+                Cantitate
+              </th>
+              <th class="text-right" nowrap>Preț</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(p, index) in appStore.cart" :key="index">
+              <td>{{ p.packType }} de {{ p.pastaType }} cu făină {{ p.flourType }} și {{ p.colorType }}</td>
+              <td class="text-right" nowrap>{{ appStore.getUnitPrice(p) }} Lei</td>
+              <td class="text-right" nowrap>
+                <v-text-field v-model="p.quantity" type="number" label="Cantitate"></v-text-field>
+              </td>
+              <td class="text-right" nowrap>{{ appStore.getPrice(p) }} Lei</td>
+              <td>
+                <v-btn size="small" variant="flat" class="btn" color="red" @click="RemoveFromCart(index)">
+                  <font-awesome-icon :icon="cartIcon" size="1x" />
+                </v-btn>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                Total
+              </td>
+              <td class="text-right" nowrap>
+                {{ appStore.getTotalPrice() }} Lei
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </v-table>
 
-        </v-col>
 
-        <v-col md="4" cols="12">
-          <div class="form-group">
-            <v-text-field v-model="phone" :counter="200" :rules="phoneRules" label="Telefon" required></v-text-field>
-          </div>
-        </v-col>
+      </v-col>
+    </v-row>
 
-        <v-col md="8" cols="12">
+    <v-row justify="center">
+      <v-col md="8" cols="12" align="center">
+        <h2>Detalii cumpărător</h2>
+        <div class="form-group">
+          <v-text-field v-model="name" :counter="200" :rules="nameRules" label="Nume" required></v-text-field>
+        </div>
+      </v-col>
+    </v-row>
 
-          <div class="form-group">
-            <v-textarea v-model="description" :counter="5000" :rules="descriptionRules" label="Observații"></v-textarea>
-          </div>
+    <v-row justify="center">
+      <v-col md="4" cols="12">
+        <div class="form-group">
+          <v-text-field v-model="email" :counter="200" :rules="emailRules" label="Email" required></v-text-field>
+        </div>
+
+      </v-col>
+
+      <v-col md="4" cols="12">
+        <div class="form-group">
+          <v-text-field v-model="phone" :counter="200" :rules="phoneRules" label="Telefon" required></v-text-field>
+        </div>
+      </v-col>
+
+      <v-col md="8" cols="12">
+
+        <div class="form-group">
+          <v-textarea v-model="description" :counter="5000" :rules="descriptionRules" label="Observații"></v-textarea>
+        </div>
 
 
-          <v-btn color="success" class="btn btn-primary btn-user btn-block" @click="Submit()">
-            Comandă
-          </v-btn>
-        </v-col>
-      </v-row>
-    </div>
+        <v-btn color="success" class="btn btn-primary btn-user btn-block" @click="Submit()">
+          Comandă
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-form>
 </template>
 
@@ -178,17 +191,27 @@ export default defineComponent({
     }
   },
 
+  watch: {
+    flourType: function (val) {
+      this.packType = this.appStore.getPackTypes(val)[0];
+    },
+  },
+
   methods: {
     AddToCart() {
-      this.appStore.addToCart({
-        flourType: this.flourType as FlourType,
-        colorType: this.colorType,
-        pastaType: this.pastaType,
-        packType: this.packType,
-        quantity: 1
-      })
+      //@ts-ignore 
+      this.$refs.form.validate();
+      if (this.valid) {
+        this.appStore.addToCart({
+          flourType: this.flourType as FlourType,
+          colorType: this.colorType,
+          pastaType: this.pastaType,
+          packType: this.packType,
+          quantity: 1
+        })
+      }
     },
-    RemoveFromCart(index: number) { 
+    RemoveFromCart(index: number) {
       this.appStore.removeFromCart(index);
     },
     Submit() {
@@ -208,4 +231,3 @@ export default defineComponent({
   },
 })
 </script>
-@/store/appstore

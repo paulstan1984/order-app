@@ -50,8 +50,24 @@ export const appStore = defineStore('appStore', {
       return [];
     },
 
+    getUnitPrice(p: ProductDTO) {
+      let price = 0;
+      if (prices[p.flourType].hasOwnProperty(p.packType)) {
+        //@ts-ignore
+        price = prices[p.flourType][p.packType] as number;
+      };
+      return price;
+    },
+
     getPrice(p: ProductDTO) {
 
+      return p.quantity * this.getUnitPrice(p);
+    },
+
+    getTotalPrice() {
+      let price = 0;
+      this.cart.forEach(p => price += this.getPrice(p));
+      return price;
     }
   }
 })
