@@ -68,7 +68,7 @@
               <td>{{ p.packType }} de {{ p.pastaType }} cu făină {{ p.flourType }} și {{ p.colorType }}</td>
               <td class="text-right" nowrap>{{ appStore.getUnitPrice(p) }} Lei</td>
               <td class="text-right" nowrap>
-                <v-text-field v-model="p.quantity" min="1" type="number"></v-text-field>
+                <v-text-field v-model="p.quantity" @keypress="digits(event)" min="1" type="number"></v-text-field>
               </td>
               <td class="text-right" nowrap>{{ appStore.getPrice(p) }} Lei</td>
               <td>
@@ -130,7 +130,7 @@
 
       <v-col md="4" cols="12">
         <div class="form-group">
-          <v-text-field v-model="phone" type="number" :counter="13" :rules="phoneRules" label="Telefon"
+          <v-text-field v-model="phone" @keypress="digits(event)" type="number" :counter="13" :rules="phoneRules" label="Telefon"
             required></v-text-field>
         </div>
       </v-col>
@@ -265,6 +265,17 @@ export default defineComponent({
       this.packType = '';
       //@ts-ignore
       this.$refs.form.reset();
+    },
+
+    digits: function(evt: any) {
+      evt = (evt) ? evt : window.event;
+      let expect = evt.target.value.toString() + evt.key.toString();
+      
+      if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(expect)) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
     },
 
     AddToCart() {
