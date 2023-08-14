@@ -165,7 +165,7 @@
   <v-dialog v-model="errorDialog" width="auto">
     <v-card>
       <v-card-text>
-        <strong>Hopa!</strong> <br/> <br/>
+        <strong>Eroare</strong> <br/> <br/>
         Ceva nu a funcționat corect. Te rog să mai încerci. Dacă problema persistă te rog să mă contactezi la telefon 0742321007.
         <br/><br/>
         O zi frumoasă, <br/> 
