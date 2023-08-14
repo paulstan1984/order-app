@@ -129,7 +129,7 @@
 
       <v-col md="4" cols="12">
         <div class="form-group">
-          <v-text-field v-model="phone" :counter="13" :rules="phoneRules" label="Telefon" required></v-text-field>
+          <v-text-field v-model="phone" type="number" :counter="13" :rules="phoneRules" label="Telefon" required></v-text-field>
         </div>
       </v-col>
 
