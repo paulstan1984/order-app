@@ -315,6 +315,8 @@ export default defineComponent({
           this.successDialog = true;
         } else {
           this.error = data;
+
+          console.log(data);
           this.errorDialog = true;
           //@ts-ignore 
           this.$refs.orderForm.validate();

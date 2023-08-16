@@ -28,7 +28,7 @@ export const prices = {
 }
 
 const accessToken = 'BJFKELVBJRKELDBNRJKEL';
-const APIURL = 'http://paste-colorate-natural.test/public/api/';
+const APIURL = 'http://api-paste-colorate-natural.test/api/';
 
 export const appStore = defineStore('appStore', {
   state: () => ({
