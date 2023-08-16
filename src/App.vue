@@ -130,8 +130,8 @@
 
       <v-col md="4" cols="12">
         <div class="form-group">
-          <v-text-field v-model="phone" @keypress="digits(event)" type="number" :counter="13" :rules="phoneRules" label="Telefon"
-            required></v-text-field>
+          <v-text-field v-model="phone" @keypress="digits(event)" type="number" :counter="13" :rules="phoneRules"
+            label="Telefon" required></v-text-field>
         </div>
       </v-col>
 
@@ -173,6 +173,16 @@
         <br /><br />
         O zi frumoasă, <br />
         Ioana!
+
+        <br /><br />
+        <v-expansion-panels>
+          <v-expansion-panel title="Erori">
+            <v-expansion-panel-text>
+              <v-alert v-for="(err, index) in errors" :key="index" type="info" variant="tonal" class="text-left"
+                >{{ err }}</v-alert>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" block @click="errorDialog = false">Închide</v-btn>
@@ -207,7 +217,7 @@ export default defineComponent({
       cartIcon: faCartShopping,
 
       appStore: appStore(),
-      error: undefined,
+      errors: [] as string[],
       email: undefined,
       name: undefined,
       phone: undefined as undefined | number,
@@ -267,10 +277,10 @@ export default defineComponent({
       this.$refs.form.reset();
     },
 
-    digits: function(evt: any) {
+    digits: function (evt: any) {
       evt = (evt) ? evt : window.event;
       let expect = evt.target.value.toString() + evt.key.toString();
-      
+
       if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(expect)) {
         evt.preventDefault();
       } else {
@@ -314,9 +324,14 @@ export default defineComponent({
         if (success) {
           this.successDialog = true;
         } else {
-          this.error = data;
+          let errors = new Array() as string[];
 
-          console.log(data);
+          Object.keys(data).forEach(function (key, index) {
+            errors.push(data[key].join(', '));
+          });
+
+          this.errors = errors;
+
           this.errorDialog = true;
           //@ts-ignore 
           this.$refs.orderForm.validate();
