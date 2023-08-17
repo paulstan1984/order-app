@@ -55,6 +55,16 @@ export const appStore = defineStore('appStore', {
       return [];
     },
 
+    getPastaTypes(flourType: FlourType): string[] {
+      switch (flourType) {
+        case 'Fără gluten':
+          return ['Tagliatelle'];
+
+        default:
+          return ['Tagliatelle', 'Spaghete'];
+      }
+    },
+
     getUnitPrice(p: ProductDTO) {
       let price = 0;
       if (prices[p.flourType].hasOwnProperty(p.packType)) {

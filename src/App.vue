@@ -20,7 +20,7 @@
 
     <v-row justify="center">
       <v-col md="4" cols="12">
-        <v-select v-model="pastaType" :items="pastaTypes" label="Tip de paste" :rules="pastaTypeRules"></v-select>
+        <v-select v-model="pastaType" :items="appStore.getPastaTypes(flourType)" label="Tip de paste" :rules="pastaTypeRules"></v-select>
       </v-col>
 
       <v-col md="4" cols="12">
@@ -288,6 +288,7 @@ export default defineComponent({
   watch: {
     flourType: function (val) {
       this.packType = this.appStore.getPackTypes(val)[0];
+      this.pastaType = this.appStore.getPastaTypes(val)[0];
     },
   },
 
