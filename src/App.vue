@@ -65,7 +65,9 @@
           </thead>
           <tbody>
             <tr v-for="(p, index) in appStore.cart" :key="index">
-              <td>{{ p.packType }} de {{ p.pastaType }} cu făină {{ p.flourType }} și {{ p.colorType }}</td>
+              <td>
+                {{ p.packType }} de {{ p.pastaType }} cu făină {{ p.flourType }} și {{ p.colorType }}
+              </td>
               <td class="text-right" nowrap>{{ appStore.getUnitPrice(p) }} Lei</td>
               <td class="text-right" nowrap>
                 <v-text-field v-model="p.quantity" @keypress="digits(event)" min="1" type="number"></v-text-field>
@@ -178,7 +180,7 @@
         <v-expansion-panels>
           <v-expansion-panel title="Erori">
             <v-expansion-panel-text>
-              <v-alert v-for="(err, index) in errors" :key="index" type="info" variant="tonal" class="text-left"
+              <v-alert v-for="(err, index) in errors" :key="index" type="error" variant="tonal" class="text-left"
                 >{{ err }}</v-alert>
             </v-expansion-panel-text>
           </v-expansion-panel>
