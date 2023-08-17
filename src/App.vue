@@ -189,14 +189,41 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <div class="loader-wrapper" v-if="appStore.loading">
+    <div class="loader">
+      <font-awesome-icon :icon="faSpinner" size="2x" :spin="true" />
+    </div>
+  </div>
 </template>
+
+
+<style scoped>
+.loader {
+  font-size: 40px;
+  position: fixed;
+  z-index: 999;
+  top: 30%;
+  left: 40%;
+}
+
+.loader-wrapper {
+  display: block;
+  position: absolute;
+  top:0px;
+  left:0px;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background-color:#FFFFFF;
+}
+</style>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faSpinner } from '@fortawesome/free-solid-svg-icons';
 // @ts-ignore
 import { appStore, FlourType } from '@/store/appstore.ts';
-import { throwStatement } from '@babel/types';
 
 export default defineComponent({
   components: {
@@ -215,6 +242,7 @@ export default defineComponent({
       packType: '' as string,
 
       cartIcon: faCartShopping,
+      faSpinner: faSpinner,
 
       appStore: appStore(),
       errors: [] as string[],

@@ -33,7 +33,8 @@ const APIURL = 'http://api-paste-colorate-natural.test/api/';
 export const appStore = defineStore('appStore', {
   state: () => ({
     cart: [] as ProductDTO[],
-    deliveryPrice: 20
+    deliveryPrice: 20,
+    loading: false
   }),
 
   actions: {
@@ -75,10 +76,12 @@ export const appStore = defineStore('appStore', {
     },
 
     makeOrder(request: any, cb: (success: boolean, data: any) => void) {
+      this.loading = true;
       axios
         .post(APIURL + 'new-order', request, { headers: { 'Authorization': accessToken } })
         .then(data => cb(true, data.data))
         .catch(err => cb(false, err?.response?.data))
+        .finally(() => this.loading = false);
     },
   }
 })
