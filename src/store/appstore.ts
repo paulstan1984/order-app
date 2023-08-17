@@ -10,6 +10,8 @@ export interface ProductDTO {
   pastaType: string;
   packType: string;
   quantity: number;
+  unitPrice: number | undefined;
+  price: number | undefined;
 }
 
 export const prices = {
@@ -39,6 +41,8 @@ export const appStore = defineStore('appStore', {
 
   actions: {
     addToCart(p: ProductDTO) {
+      p.unitPrice = this.getUnitPrice(p);
+      p.price = this.getPrice(p);
       this.cart.push(p);
     },
 

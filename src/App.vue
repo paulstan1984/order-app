@@ -225,7 +225,7 @@
 import { defineComponent } from 'vue'
 import { faCartShopping, faSpinner } from '@fortawesome/free-solid-svg-icons';
 // @ts-ignore
-import { appStore, FlourType } from '@/store/appstore.ts';
+import { appStore, FlourType, ProductDTO } from '@/store/appstore.ts';
 
 export default defineComponent({
   components: {
@@ -329,7 +329,7 @@ export default defineComponent({
           pastaType: this.pastaType,
           packType: this.packType,
           quantity: 1
-        })
+        } as ProductDTO)
       }
     },
     RemoveFromCart(index: number) {
@@ -348,7 +348,9 @@ export default defineComponent({
         email: this.email,
         phone: this.phone,
         description: this.description,
-        cart: this.appStore.cart
+        cart: this.appStore.cart,
+        totalPrice: this.appStore.getTotalPrice(),
+        deliveryPrice: this.appStore.deliveryPrice
       };
 
       this.appStore.makeOrder(request, (success: boolean, data: any) => {
