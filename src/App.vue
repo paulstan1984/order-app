@@ -70,7 +70,7 @@
               </td>
               <td class="text-right" nowrap>{{ appStore.getUnitPrice(p) }} Lei</td>
               <td class="text-right" nowrap>
-                <v-text-field v-model="p.quantity" @keypress="digits(event)" min="1" type="number"></v-text-field>
+                <v-text-field v-model="p.quantity" @keypress="digits($event)" min="1" type="number"></v-text-field>
               </td>
               <td class="text-right" nowrap>{{ appStore.getPrice(p) }} Lei</td>
               <td>
