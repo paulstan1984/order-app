@@ -343,6 +343,8 @@ export default defineComponent({
         return;
       }
 
+      this.appStore.cart.forEach(p => p.price = this.appStore.getPrice(p));
+
       const request = {
         name: this.name,
         email: this.email,
