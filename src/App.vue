@@ -1,4 +1,16 @@
 <template>
+  <v-img src="https://paste-colorate-natural.ro/wp-content/uploads/2023/07/paste-cu-faina-alba-varsate.jpeg"
+    height="200px" width="100%" cover />
+
+  <v-row justify="center">
+    <v-col md="8" cols="12" align="center">
+      <v-btn color="success" class="btn btn-primary btn-user btn-block mt-5" href="https://paste-colorate-natural.ro">
+        <font-awesome-icon :icon="backIcon" size="1x" />
+        Înapoi la site
+      </v-btn>
+    </v-col>
+  </v-row>
+
   <v-row justify="center">
     <v-col md="8" cols="12" align="center">
       <h1>Paste colorate natural</h1>
@@ -14,13 +26,15 @@
       </v-col>
 
       <v-col md="4" cols="12">
-        <v-select v-model="colorType" :items="appStore.getColorTypes(flourType)" label="Colorant Natural" :rules="colorTypeRules"></v-select>
+        <v-select v-model="colorType" :items="appStore.getColorTypes(flourType)" label="Colorant Natural"
+          :rules="colorTypeRules"></v-select>
       </v-col>
     </v-row>
 
     <v-row justify="center">
       <v-col md="4" cols="12">
-        <v-select v-model="pastaType" :items="appStore.getPastaTypes(flourType)" label="Tip de paste" :rules="pastaTypeRules"></v-select>
+        <v-select v-model="pastaType" :items="appStore.getPastaTypes(flourType)" label="Tip de paste"
+          :rules="pastaTypeRules"></v-select>
       </v-col>
 
       <v-col md="4" cols="12">
@@ -180,8 +194,8 @@
         <v-expansion-panels>
           <v-expansion-panel title="Erori">
             <v-expansion-panel-text>
-              <v-alert v-for="(err, index) in errors" :key="index" type="error" variant="tonal" class="text-left"
-                >{{ err }}</v-alert>
+              <v-alert v-for="(err, index) in errors" :key="index" type="error" variant="tonal" class="text-left">{{ err
+              }}</v-alert>
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -212,18 +226,18 @@
 .loader-wrapper {
   display: block;
   position: absolute;
-  top:0px;
-  left:0px;
+  top: 0px;
+  left: 0px;
   width: 100%;
   height: 100%;
   z-index: 999;
-  background-color:#FFFFFF;
+  background-color: #FFFFFF;
 }
 </style>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { faCartShopping, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faBackward, faCartShopping, faSpinner, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 // @ts-ignore
 import { appStore, FlourType, ProductDTO } from '@/store/appstore.ts';
 
@@ -235,7 +249,7 @@ export default defineComponent({
   data() {
     return {
       flourTypes: ['Albă', 'Integrală', 'De Secară', 'Fără gluten - din fulgi de ovăz', 'De Năut', 'De Alac', 'Integrală Spelta'],
-      pastaTypes: ['Tagliatelle', "Spaghete"], 
+      pastaTypes: ['Tagliatelle', "Spaghete"],
       flourType: '' as FlourType,
       colorType: '',
       pastaType: '',
@@ -243,6 +257,7 @@ export default defineComponent({
 
       cartIcon: faCartShopping,
       faSpinner: faSpinner,
+      backIcon: faArrowLeft,
 
       appStore: appStore(),
       errors: [] as string[],
@@ -357,7 +372,7 @@ export default defineComponent({
       this.appStore.makeOrder(request, (success: boolean, data: any) => {
         if (success) {
           this.successDialog = true;
-          window.scroll(0,0);
+          window.scroll(0, 0);
         } else {
           let errors = new Array() as string[];
 
