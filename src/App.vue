@@ -234,7 +234,7 @@ export default defineComponent({
 
   data() {
     return {
-      flourTypes: ['Albă', 'Integrală', 'Fără gluten'],
+      flourTypes: ['Albă', 'Integrală', 'De Secară', 'Fără gluten - din fulgi de ovăz', 'De Năut', 'De Alac', 'Integrală Spelta'],
       colorTypes: ['Suc de sfeclă Bio', 'Suc de morcovi Bio', 'Extract de afine',
         'Pudră de aronia și apă', 'Pudră de urzici și apă', 'Pudră de Kale și apă'],
       pastaTypes: ['Tagliatelle', "Spaghete"], // restriction -> la fara gluten doar tagliatelle

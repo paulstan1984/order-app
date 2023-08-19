@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios';
 
-export type FlourType = 'Albă' | 'Integrală' | 'Fără gluten';
+export type FlourType = 'Albă' | 'Integrală' | 'De Secară' | 'Fără gluten - din fulgi de ovăz' | 'De Năut' | 'De Alac' | 'Integrală Spelta';
 
 export interface ProductDTO {
   flourType: FlourType;
@@ -23,14 +23,26 @@ export const prices = {
     '250 gr': 15,
     '500 gr': 30
   },
-  'Fără gluten': {
+  'De Secară' : {
+    '200 gr': 15
+  },
+  'Fără gluten - din fulgi de ovăz': {
     '100 gr': 10,
     '200 gr': 20
+  },
+  'De Năut' : { // doar simple fara coloranti
+    '200 gr': 15
+  }, 
+  'De Alac': {
+    '150 gr': 20,
+  }, 
+  'Integrală Spelta': {
+    '150 gr': 20
   }
 }
 
 const accessToken = 'BJFKELVBJRKELDBNRJKEL';
-const APIURL = 'http://api-paste-colorate-natural.test/api/';
+const APIURL = 'https://api.paste-colorate-natural.ro/api/';
 
 export const appStore = defineStore('appStore', {
   state: () => ({
@@ -61,7 +73,7 @@ export const appStore = defineStore('appStore', {
 
     getPastaTypes(flourType: FlourType): string[] {
       switch (flourType) {
-        case 'Fără gluten':
+        case 'Fără gluten - din fulgi de ovăz':
           return ['Tagliatelle'];
 
         default:
