@@ -2,7 +2,8 @@
 import { defineStore } from 'pinia'
 import axios from 'axios';
 
-export type FlourType = 'Albă' | 'Integrală' | 'De Secară' | 'Fără gluten - din fulgi de ovăz' | 'De Năut' | 'De Alac' | 'Integrală Spelta';
+export type FlourType = 'Albă' | 'Integrală' | 'De Secară' | 'Fără gluten - din fulgi de ovăz'
+  | 'De Năut' | 'De Alac' | 'Integrală Spelta';
 
 export interface ProductDTO {
   flourType: FlourType;
@@ -23,19 +24,19 @@ export const prices = {
     '250 gr': 15,
     '500 gr': 30
   },
-  'De Secară' : {
+  'De Secară': {
     '200 gr': 15
   },
   'Fără gluten - din fulgi de ovăz': {
     '100 gr': 10,
     '200 gr': 20
   },
-  'De Năut' : { // doar simple fara coloranti
+  'De Năut': {
     '200 gr': 15
-  }, 
+  },
   'De Alac': {
     '150 gr': 20,
-  }, 
+  },
   'Integrală Spelta': {
     '150 gr': 20
   }
@@ -78,6 +79,17 @@ export const appStore = defineStore('appStore', {
 
         default:
           return ['Tagliatelle', 'Spaghete'];
+      }
+    },
+
+    getColorTypes(flourType: FlourType): string[] {
+      switch (flourType) {
+        case 'De Năut':
+          return ['Simplă - fără colorant natural'];
+
+        default:
+          return ['Simplă - fără colorant natural', 'Suc de sfeclă Bio', 'Suc de morcovi Bio', 'Extract de afine',
+            'Pudră de aronia și apă', 'Pudră de urzici și apă', 'Pudră de Kale și apă'];
       }
     },
 

@@ -14,7 +14,7 @@
       </v-col>
 
       <v-col md="4" cols="12">
-        <v-select v-model="colorType" :items="colorTypes" label="Colorant Natural" :rules="colorTypeRules"></v-select>
+        <v-select v-model="colorType" :items="appStore.getColorTypes(flourType)" label="Colorant Natural" :rules="colorTypeRules"></v-select>
       </v-col>
     </v-row>
 
@@ -235,9 +235,7 @@ export default defineComponent({
   data() {
     return {
       flourTypes: ['Albă', 'Integrală', 'De Secară', 'Fără gluten - din fulgi de ovăz', 'De Năut', 'De Alac', 'Integrală Spelta'],
-      colorTypes: ['Suc de sfeclă Bio', 'Suc de morcovi Bio', 'Extract de afine',
-        'Pudră de aronia și apă', 'Pudră de urzici și apă', 'Pudră de Kale și apă'],
-      pastaTypes: ['Tagliatelle', "Spaghete"], // restriction -> la fara gluten doar tagliatelle
+      pastaTypes: ['Tagliatelle', "Spaghete"], 
       flourType: '' as FlourType,
       colorType: '',
       pastaType: '',
@@ -289,6 +287,7 @@ export default defineComponent({
     flourType: function (val) {
       this.packType = this.appStore.getPackTypes(val)[0];
       this.pastaType = this.appStore.getPastaTypes(val)[0];
+      this.colorType = this.appStore.getColorTypes(val)[0];
     },
   },
 
