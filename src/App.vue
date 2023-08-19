@@ -358,7 +358,6 @@ export default defineComponent({
       this.appStore.makeOrder(request, (success: boolean, data: any) => {
         if (success) {
           this.successDialog = true;
-          this.clearOrder();
           window.scroll(0,0);
         } else {
           let errors = new Array() as string[];
