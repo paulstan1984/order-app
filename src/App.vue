@@ -75,7 +75,7 @@
           <tbody>
             <tr v-for="(p, index) in appStore.cart" :key="index">
               <td>
-                {{ p.packType }} de {{ p.pastaType }} cu făină {{ p.flourType }} și {{ p.colorType }}
+                {{ p.packType }} cu făină {{ p.flourType }} și {{ p.colorType }}
               </td>
               <td class="text-right" nowrap>{{ appStore.getUnitPrice(p) }} Lei</td>
               <td class="text-right" nowrap>
