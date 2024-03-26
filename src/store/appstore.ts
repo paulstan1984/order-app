@@ -2,13 +2,11 @@
 import { defineStore } from 'pinia'
 import axios from 'axios';
 
-export type FlourType = 'Albă' | 'Integrală' | 'De Secară' | 'Fără gluten - din fulgi de ovăz'
-  | 'De Năut' | 'De Alac' | 'Integrală Spelta';
+export type FlourType = 'Albă' | 'Integrală' | 'Secară' | 'Năut Solaris' | 'Fulgi de ovăz FG' | 'Năut FG' | 'Linte FG' | 'Mazăre FG';
 
 export interface ProductDTO {
   flourType: FlourType;
   colorType: string;
-  pastaType: string;
   packType: string;
   quantity: number;
   unitPrice: number | undefined;
@@ -24,21 +22,29 @@ export const prices = {
     '250 gr': 15,
     '500 gr': 30
   },
-  'De Secară': {
-    '200 gr': 15
+  'Secară': {
+    '200 gr': 15,
+    '400 gr': 30
   },
-  'Fără gluten - din fulgi de ovăz': {
-    '100 gr': 10,
-    '200 gr': 20
+  'Fulgi de ovăz FG': {
+    '150 gr': 10,
+    '300 gr': 20
   },
-  'De Năut': {
-    '200 gr': 15
+  'Năut Solaris': {
+    '200 gr': 15,
+    '400 gr': 30
   },
-  'De Alac': {
-    '150 gr': 20,
+  'Năut FG': {
+    '150 gr': 15,
+    '300 gr': 15
   },
-  'Integrală Spelta': {
-    '150 gr': 20
+  'Mazăre FG': {
+    '150 gr': 15,
+    '300 gr': 15
+  },
+  'Linte FG': {
+    '150 gr': 15,
+    '300 gr': 15
   }
 }
 
@@ -72,20 +78,13 @@ export const appStore = defineStore('appStore', {
       return [];
     },
 
-    getPastaTypes(flourType: FlourType): string[] {
-      switch (flourType) {
-        case 'Fără gluten - din fulgi de ovăz':
-          return ['Tagliatelle'];
-
-        default:
-          return ['Tagliatelle', 'Spaghete'];
-      }
-    },
-
     getColorTypes(flourType: FlourType): string[] {
       switch (flourType) {
-        case 'De Năut':
-          return ['Simplă - fără colorant natural'];
+        case 'Năut Solaris':
+        case 'Mazăre FG':
+        case 'Năut FG':
+        case 'Linte FG':
+            return ['Simplă - fără colorant natural'];
 
         default:
           return ['Simplă - fără colorant natural', 'Suc de sfeclă Bio', 'Suc de morcovi Bio', 'Extract de afine',

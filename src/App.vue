@@ -33,11 +33,6 @@
 
     <v-row justify="center">
       <v-col md="4" cols="12">
-        <v-select v-model="pastaType" :items="appStore.getPastaTypes(flourType)" label="Tip de paste"
-          :rules="pastaTypeRules"></v-select>
-      </v-col>
-
-      <v-col md="4" cols="12">
         <v-select v-model="packType" :items="appStore.getPackTypes(flourType)" label="Ambalaj"
           :rules="packTypeRules"></v-select>
       </v-col>
@@ -248,8 +243,7 @@ export default defineComponent({
 
   data() {
     return {
-      flourTypes: ['Albă', 'Integrală', 'De Secară', 'Fără gluten - din fulgi de ovăz', 'De Năut', 'De Alac', 'Integrală Spelta'],
-      pastaTypes: ['Tagliatelle', "Spaghete"],
+      flourTypes: ['Albă', 'Integrală', 'Secară', 'Năut Solaris', 'Fulgi de ovăz FG', 'Năut FG', 'Linte FG', 'Mazăre FG'],
       flourType: '' as FlourType,
       colorType: '',
       pastaType: '',
@@ -301,7 +295,6 @@ export default defineComponent({
   watch: {
     flourType: function (val) {
       this.packType = this.appStore.getPackTypes(val)[0];
-      this.pastaType = this.appStore.getPastaTypes(val)[0];
       this.colorType = this.appStore.getColorTypes(val)[0];
     },
   },
@@ -340,7 +333,6 @@ export default defineComponent({
         this.appStore.addToCart({
           flourType: this.flourType as FlourType,
           colorType: this.colorType,
-          pastaType: this.pastaType,
           packType: this.packType,
           quantity: 1
         } as ProductDTO)
