@@ -5,8 +5,9 @@ import axios from 'axios';
 export type FlourType = 'Albă' | 'Integrală' | 'Secară' | 'Năut Solaris' | 'Fulgi de ovăz FG' | 'Năut FG' | 'Linte FG' | 'Mazăre FG';
 
 export interface ProductDTO {
-  flourType: FlourType;
-  colorType: string;
+  product: string,
+  flourType: string,
+  description: string,
   packType: string;
   quantity: number;
   unitPrice: number | undefined;
@@ -14,37 +15,45 @@ export interface ProductDTO {
 }
 
 export const prices = {
-  'Albă': {
-    '250 gr': 10,
-    '500 gr': 20
+  'Paste': {
+    'Albă': {
+      '250 gr': 10,
+      '500 gr': 20
+    },
+    'Integrală': {
+      '250 gr': 15,
+      '500 gr': 30
+    },
+    'Secară': {
+      '200 gr': 15,
+      '400 gr': 30
+    },
+    'Fulgi de ovăz FG': {
+      '150 gr': 10,
+      '300 gr': 20
+    },
+    'Năut Solaris': {
+      '200 gr': 15,
+      '400 gr': 30
+    },
+    'Năut FG': {
+      '150 gr': 15,
+      '300 gr': 15
+    },
+    'Mazăre FG': {
+      '150 gr': 15,
+      '300 gr': 15
+    },
+    'Linte FG': {
+      '150 gr': 15,
+      '300 gr': 15
+    }
   },
-  'Integrală': {
-    '250 gr': 15,
-    '500 gr': 30
+  'Caramel': {
+    '200 gr': 20
   },
-  'Secară': {
-    '200 gr': 15,
-    '400 gr': 30
-  },
-  'Fulgi de ovăz FG': {
-    '150 gr': 10,
-    '300 gr': 20
-  },
-  'Năut Solaris': {
-    '200 gr': 15,
-    '400 gr': 30
-  },
-  'Năut FG': {
-    '150 gr': 15,
-    '300 gr': 15
-  },
-  'Mazăre FG': {
-    '150 gr': 15,
-    '300 gr': 15
-  },
-  'Linte FG': {
-    '150 gr': 15,
-    '300 gr': 15
+  'Vegeta': {
+    '100 gr': 20
   }
 }
 
@@ -55,6 +64,7 @@ export const appStore = defineStore('appStore', {
   state: () => ({
     cart: [] as ProductDTO[],
     deliveryPrice: 20,
+    freeShippingThreshold: 200,
     loading: false
   }),
 
@@ -69,10 +79,30 @@ export const appStore = defineStore('appStore', {
       this.cart.splice(index, 1);
     },
 
-    getPackTypes(flourType: FlourType): string[] {
-      const packages = prices[flourType];
-      if (packages) {
-        return Object.keys(packages);
+    getPackTypes(product: string, flourType: FlourType): string[] {
+
+      switch (product) {
+        case 'Paste':
+          try{
+            const packages = prices[product][flourType];
+            if (packages) {
+              return Object.keys(packages);
+            }
+  
+            return [];
+          }
+          catch(err) {
+            return [];
+          }
+          break;
+
+        case 'Vegeta':
+          return ['100 gr'];
+          break;
+
+        case 'Caramel':
+          return ['200 gr'];
+          break;
       }
 
       return [];
@@ -94,10 +124,25 @@ export const appStore = defineStore('appStore', {
 
     getUnitPrice(p: ProductDTO) {
       let price = 0;
-      if (prices[p.flourType].hasOwnProperty(p.packType)) {
+
+      try{
+        if(['Vegeta', 'Caramel'].indexOf(p.product) > -1) {
+          //@ts-ignore
+          if (prices[p.product].hasOwnProperty(p.packType)){
+            //@ts-ignore
+            price = prices[p.product][p.packType] as number;
+          }
+        }
         //@ts-ignore
-        price = prices[p.flourType][p.packType] as number;
-      };
+        else if (prices[p.product][p.flourType].hasOwnProperty(p.packType)) {
+          //@ts-ignore
+          price = prices[p.product][p.flourType][p.packType] as number;
+        };
+      }
+      catch(err) {
+        console.error(err);
+      }
+
       return price;
     },
 

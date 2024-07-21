@@ -22,19 +22,46 @@
   <v-form ref="form" v-model="valid" class="user">
     <v-row justify="center">
       <v-col md="4" cols="12">
-        <v-select v-model="flourType" :items="flourTypes" label="Tip Făină" :rules="flourTypeRules"></v-select>
-      </v-col>
-
-      <v-col md="4" cols="12">
-        <v-select v-model="colorType" :items="appStore.getColorTypes(flourType)" label="Colorant Natural"
-          :rules="colorTypeRules"></v-select>
+        <v-select v-model="product" :items="products" label="Produs"
+          :rules="requiredRules"></v-select>
       </v-col>
     </v-row>
 
+    <div v-if="product=='Paste'">
+      <v-row justify="center">
+        <v-col md="4" cols="12">
+          <v-select v-model="flourType" :items="flourTypes" label="Tip Făină" :rules="requiredRules"></v-select>
+        </v-col>
+
+        <v-col md="4" cols="12">
+          <v-select v-model="colorType" :items="appStore.getColorTypes(flourType)" label="Colorant Natural"
+            :rules="requiredRules"></v-select>
+        </v-col>
+      </v-row>
+    </div>
+
+    <div v-if="product=='Vegeta'">
+      <v-row justify="center">
+        <v-col md="4" cols="12">
+          <v-select v-model="granularity" :items="['Pudră', 'Cubulețe']" label="Granulație"
+            :rules="requiredRules"></v-select>
+        </v-col>
+      </v-row>
+    </div>
+
+    <div v-if="product=='Caramel'">
+      <v-row justify="center">
+        <v-col md="4" cols="12">
+          <v-select v-model="caramelType" :items="['Simplu', 'Sărat']" label="Tip"
+            :rules="requiredRules"></v-select>
+        </v-col>
+      </v-row>
+    </div>
+
     <v-row justify="center">
       <v-col md="4" cols="12">
-        <v-select v-model="packType" :items="appStore.getPackTypes(flourType)" label="Ambalaj"
-          :rules="packTypeRules"></v-select>
+        <v-select v-model="packType" :items="appStore.getPackTypes(product, flourType)" label="Ambalaj"
+          :rules="requiredRules"></v-select>
       </v-col>
     </v-row>
 
@@ -55,7 +82,7 @@
       <v-col md="8" cols="12" align="center">
         <h2>Coșul de cumpărături</h2>
 
-        <v-alert type="info" variant="tonal" class="text-left">La cumpărături de peste {{ appStore.deliveryPrice }} Lei
+        <v-alert type="info" variant="tonal" class="text-left">La cumpărături de peste {{ appStore.freeShippingThreshold }} Lei
           transportul este gratuit.</v-alert>
 
         <v-table>
@@ -75,7 +102,7 @@
           <tbody>
             <tr v-for="(p, index) in appStore.cart" :key="index">
               <td>
-                {{ p.packType }} cu făină {{ p.flourType }} și {{ p.colorType }}
+                {{ p.description }}
               </td>
               <td class="text-right" nowrap>{{ appStore.getUnitPrice(p) }} Lei</td>
               <td class="text-right" nowrap>
@@ -98,7 +125,7 @@
               <td></td>
             </tr>
 
-            <tr v-if="appStore.getTotalPrice() < 100">
+            <tr v-if="appStore.getTotalPrice() < appStore.freeShippingThreshold">
               <td colspan="3">
                 Transport
               </td>
@@ -108,7 +135,7 @@
               <td></td>
             </tr>
 
-            <tr v-if="appStore.getTotalPrice() < 100">
+            <tr v-if="appStore.getTotalPrice() < appStore.freeShippingThreshold">
               <td colspan="3">
                 Total de plată
               </td>
@@ -232,22 +259,25 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { faBackward, faCartShopping, faSpinner, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faSpinner, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 // @ts-ignore
 import { appStore, FlourType, ProductDTO } from '@/store/appstore.ts';
 
 export default defineComponent({
-  components: {
-
-  },
-
   data() {
     return {
+      products: ['Paste', 'Vegeta', 'Caramel'],
+      
       flourTypes: ['Albă', 'Integrală', 'Secară', 'Năut Solaris', 'Fulgi de ovăz FG', 'Năut FG', 'Linte FG', 'Mazăre FG'],
+      packageTypes: [] as string[],
+      product: '' as string,
+      
       flourType: '' as FlourType,
       colorType: '',
-      pastaType: '',
       packType: '' as string,
+
+      granularity: '' as string,
+      caramelType: '' as string,
 
       cartIcon: faCartShopping,
       faSpinner: faSpinner,
@@ -263,11 +293,8 @@ export default defineComponent({
       validOrderForm: false,
       successDialog: false,
       errorDialog: false,
-      colorTypeRules: [(v: any) => !!v || 'Obligatoriu'],
-      flourTypeRules: [(v: any) => !!v || 'Obligatoriu'],
-      packTypeRules: [(v: any) => !!v || 'Obligatoriu'],
-      pastaTypeRules: [(v: any) => !!v || 'Obligatoriu'],
-
+      requiredRules:  [(v: any) => !!v || 'Obligatoriu'],
+      
       nameRules: [
         (v: any) => (v || '').length <= 200 || 'Sunt permise maxim 200 de caractere.',
         (v: any) => !!v || 'Obligatoriu',
@@ -293,9 +320,15 @@ export default defineComponent({
   },
 
   watch: {
+    product: function (val) {
+      this.packType = '',
+      this.colorType = '';
+      this.packageTypes = this.appStore.getPackTypes(val, this.flourType);
+    },
     flourType: function (val) {
-      this.packType = this.appStore.getPackTypes(val)[0];
-      this.colorType = this.appStore.getColorTypes(val)[0];
+      this.packType = '',
+      this.colorType = '';
+      this.packageTypes = this.appStore.getPackTypes(this.product, this.flourType);
     },
   },
 
@@ -309,7 +342,6 @@ export default defineComponent({
       this.description = '';
       this.flourType = '' as FlourType;
       this.colorType = '';
-      this.pastaType = '';
       this.packType = '';
       //@ts-ignore
       this.$refs.form.reset();
@@ -326,16 +358,47 @@ export default defineComponent({
       }
     },
 
+    getDescription(p: ProductDTO) {
+      let price = 0;
+
+      try{
+        if(['Vegeta', 'Caramel'].indexOf(p.product) > -1) {
+          let description = `${p.packType} ${p.product} `;
+          if(p.product == 'Vegeta') {
+            description += this.granularity;
+          }
+          if(p.product == 'Caramel') {
+            description += this.caramelType;
+          }
+
+          return description;
+        }
+        //@ts-ignore
+        else if (p.product == 'Paste') {
+          return `${p.packType} ${p.product} cu faină ${p.flourType} ${this.colorType}`;
+        };
+      }
+      catch(err) {
+        console.error(err);
+      }
+
+      return '';
+    },
+
     AddToCart() {
       //@ts-ignore 
       this.$refs.form.validate();
       if (this.valid) {
-        this.appStore.addToCart({
-          flourType: this.flourType as FlourType,
-          colorType: this.colorType,
+
+        const p = {
+          product: this.product,
+          flourType: this.flourType,
           packType: this.packType,
           quantity: 1
-        } as ProductDTO)
+        } as ProductDTO;
+        p.description = this.getDescription(p);
+
+        this.appStore.addToCart(p)
       }
     },
     RemoveFromCart(index: number) {
